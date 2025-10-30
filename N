@@ -1,0 +1,80 @@
+-- สร้าง GUI หลัก
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local Title = Instance.new("TextLabel")
+local Button = Instance.new("TextButton")
+
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- ตั้งค่าหน้าตา GUI
+Frame.Parent = ScreenGui
+Frame.Size = UDim2.new(0, 180, 0, 140)
+Frame.Position = UDim2.new(0.5, -90, 0.5, -70)
+Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderSizePixel = 0
+Frame.Active = true
+Frame.Draggable = true
+Frame.BackgroundTransparency = 0.2
+Frame.ClipsDescendants = true
+Frame.Name = "KillAllGui"
+Frame.ZIndex = 2
+Frame.CornerRadius = UDim.new(0, 12)
+
+-- เพิ่มมุมโค้ง
+local UICorner = Instance.new("UICorner", Frame)
+UICorner.CornerRadius = UDim.new(0, 12)
+
+-- ชื่อด้านบน
+Title.Parent = Frame
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.BackgroundTransparency = 1
+Title.Text = "Kill all 🇹🇭"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.FredokaOne
+Title.TextSize = 20
+
+-- ปุ่มกด
+Button.Parent = Frame
+Button.Size = UDim2.new(0.6, 0, 0.4, 0)
+Button.Position = UDim2.new(0.2, 0, 0.4, 0)
+Button.BackgroundColor3 = Color3.fromRGB(0, 255, 100)
+Button.Text = "ปิด"
+Button.TextColor3 = Color3.fromRGB(0, 0, 0)
+Button.Font = Enum.Font.GothamBold
+Button.TextSize = 22
+local ButtonCorner = Instance.new("UICorner", Button)
+ButtonCorner.CornerRadius = UDim.new(0, 8)
+
+-- ฟังก์ชัน Kill All
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local killing = false
+local loop
+
+local function killAll()
+	for _, player in pairs(Players:GetPlayers()) do
+		if player ~= Players.LocalPlayer then
+			local character = player.Character
+			if character and character:FindFirstChild("Humanoid") then
+				character.Humanoid.Health = 0
+			end
+		end
+	end
+end
+
+-- ปุ่มเปิด/ปิด
+Button.MouseButton1Click:Connect(function()
+	if killing then
+		killing = false
+		Button.Text = "ปิด"
+	else
+		killing = true
+		Button.Text = "เปิด"
+		task.spawn(function()
+			while killing do
+				killAll()
+				task.wait(0.3)
+			end
+		end)
+	end
+end)
